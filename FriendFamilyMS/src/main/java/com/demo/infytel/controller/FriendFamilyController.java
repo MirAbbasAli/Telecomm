@@ -35,6 +35,7 @@ public class FriendFamilyController {
 	// Fetches friend and family numbers of a given customer phoneNo
 	@RequestMapping(value="/customers/{phoneNo}/friends",method=RequestMethod.GET, produces=MediaType.APPLICATION_JSON_VALUE)
 	public List<Long> getSpecificFriends(@PathVariable Long phoneNo){
+		System.out.println("===== Fetching Data ====");
 		logger.info("Friend and Family numbers for customer {}", phoneNo);
 		return friendService.getSpecificFriend(phoneNo);
 	}

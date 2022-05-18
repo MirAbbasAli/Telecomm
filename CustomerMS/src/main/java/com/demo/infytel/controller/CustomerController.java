@@ -7,6 +7,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cloud.context.config.annotation.RefreshScope;
+import org.springframework.cloud.loadbalancer.annotation.LoadBalancerClient;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -16,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestTemplate;
 
+import com.demo.infytel.LoadBalancerConfig;
 import com.demo.infytel.dto.CustomerDTO;
 import com.demo.infytel.dto.LoginDTO;
 import com.demo.infytel.dto.PlanDTO;
@@ -24,14 +26,15 @@ import com.demo.infytel.service.CustomerService;
 @RefreshScope
 @RestController
 @CrossOrigin
+@LoadBalancerClient(name="MyLoadBalancer", configuration=LoadBalancerConfig.class)
 public class CustomerController {
 	Logger logger = LoggerFactory.getLogger(this.getClass());
 
 	@Autowired
 	private CustomerService custService;
 	
-	@Value("${friend.uri}")
-	private String friendUri;
+	@Autowired
+	private RestTemplate template;
 	
 	@Value("${plan.uri}")
 	private String planUri;
@@ -59,7 +62,7 @@ public class CustomerController {
 		// Add rest endpoint to replace foreign key contraint for plan table
 		PlanDTO planDTO=new RestTemplate().getForObject(planUri+custDTO.getCurrentPlan().getPlanId(), PlanDTO.class);
 		custDTO.setCurrentPlan(planDTO);
-		List<Long> friends=new RestTemplate().getForObject(friendUri+phoneNo+"/friends", List.class);
+		List<Long> friends=template.getForObject("http://MyLoadBalancer/customers/"+phoneNo+"/friends", List.class);
 		custDTO.setFriendAndFamily(friends);
 		return custDTO;
 	}
