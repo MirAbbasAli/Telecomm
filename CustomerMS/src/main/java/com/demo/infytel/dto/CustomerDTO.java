@@ -1,6 +1,5 @@
 package com.demo.infytel.dto;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import com.demo.infytel.entity.Customer;
