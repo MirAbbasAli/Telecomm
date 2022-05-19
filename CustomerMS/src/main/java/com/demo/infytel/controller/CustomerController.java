@@ -1,13 +1,11 @@
 package com.demo.infytel.controller;
 
-import java.net.URI;
 import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cloud.client.ServiceInstance;
-import org.springframework.cloud.client.discovery.DiscoveryClient;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -26,23 +24,16 @@ import com.demo.infytel.service.CustomerService;
 @RefreshScope
 @RestController
 @CrossOrigin
-//@LoadBalancerClient(name="MyLoadBalancer", configuration=LoadBalancerConfig.class)
 public class CustomerController {
 	Logger logger = LoggerFactory.getLogger(this.getClass());
 
 	@Autowired
 	private CustomerService custService;
 	
-	/*
-	 * @Autowired private RestTemplate template;
-	 * 
-	 * @Value("${plan.uri}") private String planUri;
-	 */
-
-	@Autowired
-	private DiscoveryClient client;
 	
-	
+	@Autowired 
+	RestTemplate template;
+	  	
 	// Create a new customer
 	@RequestMapping(value = "/customers", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
 	public void createCustomer(@RequestBody CustomerDTO custDTO) {
@@ -63,25 +54,14 @@ public class CustomerController {
 
 		logger.info("Profile request for customer {}", phoneNo);
 		
-		List<ServiceInstance> friendInstances=client.getInstances("FRIENDFAMILYMS");
-		ServiceInstance friendInstance=friendInstances.get(0);
-		URI friendUri=friendInstance.getUri();
-		
-		List<ServiceInstance> planInstances=client.getInstances("PLANMS");
-		ServiceInstance planInstance=planInstances.get(0);
-		URI planUri=planInstance.getUri();
-		
 		CustomerDTO custDTO=custService.getCustomerProfile(phoneNo);
 		// Add rest endpoint to replace foreign key contraint for plan table
-//		PlanDTO planDTO=new RestTemplate().getForObject(planUri+custDTO.getCurrentPlan().getPlanId(), PlanDTO.class);
-		
-		
-		PlanDTO planDTO=new RestTemplate().getForObject(planUri+"/plans/"+custDTO.getCurrentPlan().getPlanId(), PlanDTO.class);
+		PlanDTO planDTO=template.getForObject("http://PlanMS/plans/"+custDTO.getCurrentPlan().getPlanId(), PlanDTO.class);
 		custDTO.setCurrentPlan(planDTO);
 
 		@SuppressWarnings("unchecked")
 		//		List<Long> friends=template.getForObject("http://MyLoadBalancer/customers/"+phoneNo+"/friends", List.class);
-		List<Long> friends=new RestTemplate().getForObject(friendUri+"/customers/"+phoneNo+"/friends", List.class);
+		List<Long> friends=template.getForObject("http://FriendFamilyMS/customers/"+phoneNo+"/friends", List.class);
 		custDTO.setFriendAndFamily(friends);
 		return custDTO;
 	}

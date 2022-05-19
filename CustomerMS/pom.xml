@@ -5,7 +5,7 @@
 	<parent>
 		<groupId>org.springframework.boot</groupId>
 		<artifactId>spring-boot-starter-parent</artifactId>
-		<version>2.5.13</version>
+		<version>2.6.2</version>
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>com.demo.infytel</groupId>
@@ -17,7 +17,8 @@
 	<properties>
 		<java.version>11</java.version>
 		<log4j2.version>2.17.1</log4j2.version>
-		<spring-cloud.version>2020.0.5</spring-cloud.version>
+		<maven-jar-plugin.version>3.1.1</maven-jar-plugin.version>
+		<spring-cloud.version>2021.0.0</spring-cloud.version>
 	</properties>
 	
 	<dependencyManagement>
@@ -49,13 +50,8 @@
 			<artifactId>spring-boot-starter-web</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>org.springframework.cloud</groupId>
-			<artifactId>spring-cloud-starter-netflix-eureka-client</artifactId>
-		</dependency>
-		<dependency>
 			<groupId>mysql</groupId>
 			<artifactId>mysql-connector-java</artifactId>
-			<scope>runtime</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
@@ -64,23 +60,30 @@
 		</dependency>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-devtools</artifactId>
-			<scope>runtime</scope>
-			<optional>true</optional>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-actuator</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework.cloud</groupId>
-			<artifactId>spring-cloud-starter-config</artifactId>
+			<artifactId>spring-cloud-starter-consul-config</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework.cloud</groupId>
-			<artifactId>spring-cloud-starter-loadbalancer</artifactId>
+			<artifactId>spring-cloud-starter-consul-discovery</artifactId>
+			<exclusions> 
+				<exclusion> 
+					<groupId>org.springframework.cloud</groupId> 
+					<artifactId>spring-cloud-netflix-hystrix</artifactId> 
+				</exclusion> 
+				<exclusion> 
+					<groupId>org.springframework.cloud</groupId> 
+					<artifactId>spring-cloud-starter-netflix-ribbon</artifactId> 
+				</exclusion> 
+				</exclusions> 
 		</dependency>
-		
+		<dependency>
+			  <groupId>org.springframework.cloud</groupId>
+			  <artifactId>spring-cloud-starter-bootstrap</artifactId>
+	    </dependency>
 	</dependencies>
 
 	<build>
