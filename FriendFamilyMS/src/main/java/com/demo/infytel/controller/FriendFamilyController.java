@@ -38,11 +38,11 @@ public class FriendFamilyController {
 		System.out.println("===== Fetching Data ====");
 		logger.info("Friend and Family numbers for customer {}", phoneNo);
 		// Introducing delay time of 5s
-		try {
+		/*try {
 			Thread.sleep(5000);
 		} catch(InterruptedException e) {
 			e.printStackTrace();
-		}
+		}*/
 		return friendService.getSpecificFriend(phoneNo);
 	}
 }
