@@ -9,6 +9,7 @@ import org.springframework.web.client.RestTemplate;
 import com.demo.infytel.dto.PlanDTO;
 
 import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
+import io.vavr.concurrent.Future;
 
 @Service
 public class CustCircuitBreakerService {
@@ -16,13 +17,13 @@ public class CustCircuitBreakerService {
 	private RestTemplate template;
 	
 	@CircuitBreaker(name="customerService")
-	public PlanDTO getSpecificPlan(Integer planId) {
-		return template.getForObject("http://PlanMS/plans/"+planId, PlanDTO.class);
+	public Future<PlanDTO> getSpecificPlan(Integer planId) {
+		return Future.of(()->template.getForObject("http://PlanMS/plans/"+planId, PlanDTO.class));
 	}
 	
 	@CircuitBreaker(name="customerService")
 	@SuppressWarnings("unchecked")
-	public List<Long> getSpecificFriends(Long phoneNo) {
-		return template.getForObject("http://FriendFamilyMS/customers/"+phoneNo+"/friends", List.class);
+	public Future<List<Long>> getSpecificFriends(Long phoneNo) {
+		return Future.of(()->template.getForObject("http://FriendFamilyMS/customers/"+phoneNo+"/friends", List.class));
 	}
 }

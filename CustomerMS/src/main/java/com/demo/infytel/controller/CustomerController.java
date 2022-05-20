@@ -21,6 +21,7 @@ import com.demo.infytel.service.CustCircuitBreakerService;
 import com.demo.infytel.service.CustomerService;
 
 import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
+import io.vavr.concurrent.Future;
 
 @RefreshScope
 @RestController
@@ -62,20 +63,22 @@ public class CustomerController {
 		long planStart=System.currentTimeMillis();
 		
 		// Add rest endpoint to replace foreign key contraint for plan table
-		PlanDTO planDTO=custCircuitBreakerService.getSpecificPlan(custDTO.getCurrentPlan().getPlanId());
+		Future<PlanDTO> planDTOFuture=custCircuitBreakerService.getSpecificPlan(custDTO.getCurrentPlan().getPlanId());
 		
 		long planStop=System.currentTimeMillis();
 		
-		custDTO.setCurrentPlan(planDTO);
+		
 
 		long friendStart=System.currentTimeMillis();
 		
 		//		List<Long> friends=template.getForObject("http://MyLoadBalancer/customers/"+phoneNo+"/friends", List.class);
-		List<Long> friends=custCircuitBreakerService.getSpecificFriends(phoneNo);
+		Future<List<Long>> friendsFuture=custCircuitBreakerService.getSpecificFriends(phoneNo);
 		
 		long friendStop=System.currentTimeMillis();
 		
-		custDTO.setFriendAndFamily(friends);
+		custDTO.setCurrentPlan(planDTOFuture.get());
+		custDTO.setFriendAndFamily(friendsFuture.get());
+		
 		
 		long overAllStop=System.currentTimeMillis();
 		
