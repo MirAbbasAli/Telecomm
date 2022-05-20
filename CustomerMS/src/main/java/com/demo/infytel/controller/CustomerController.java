@@ -2,7 +2,6 @@ package com.demo.infytel.controller;
 
 import java.util.List;
 
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,6 +19,8 @@ import com.demo.infytel.dto.CustomerDTO;
 import com.demo.infytel.dto.LoginDTO;
 import com.demo.infytel.dto.PlanDTO;
 import com.demo.infytel.service.CustomerService;
+
+import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 
 @RefreshScope
 @RestController
@@ -50,6 +51,7 @@ public class CustomerController {
 
 	// Fetches full profile of a specific customer
 	@RequestMapping(value = "/customers/{phoneNo}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+	@CircuitBreaker(name="customerService",fallbackMethod="getCustomerProfileFallback")
 	public CustomerDTO getCustomerProfile(@PathVariable Long phoneNo) {
 
 		logger.info("Profile request for customer {}", phoneNo);
@@ -64,5 +66,10 @@ public class CustomerController {
 		List<Long> friends=template.getForObject("http://FriendFamilyMS/customers/"+phoneNo+"/friends", List.class);
 		custDTO.setFriendAndFamily(friends);
 		return custDTO;
+	}
+	
+	public CustomerDTO getCustomerProfileFallback(Long phoneNo, Throwable throwable) {
+		logger.info("================= In Fallback ========================");
+		return new CustomerDTO();
 	}
 }

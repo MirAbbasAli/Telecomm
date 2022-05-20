@@ -37,6 +37,8 @@ public class FriendFamilyController {
 	public List<Long> getSpecificFriends(@PathVariable Long phoneNo){
 		System.out.println("===== Fetching Data ====");
 		logger.info("Friend and Family numbers for customer {}", phoneNo);
+		if(phoneNo==9009009001L)
+			throw new RuntimeException();
 		return friendService.getSpecificFriend(phoneNo);
 	}
 }
