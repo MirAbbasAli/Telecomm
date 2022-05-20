@@ -19,26 +19,30 @@ import com.demo.infytel.service.FriendFamilyService;
 @RestController
 @CrossOrigin
 public class FriendFamilyController {
-	
+
 	Logger logger=LoggerFactory.getLogger(this.getClass());
-	
+
 	@Autowired
 	private FriendFamilyService friendService;
-	
+
 	// Create Friend Family
 	@RequestMapping(value="/customers/{phoneNo}/friends", method=RequestMethod.POST, consumes=MediaType.APPLICATION_JSON_VALUE)
 	public void saveFriend(@PathVariable Long phoneNo, @RequestBody FriendFamilyDTO friendDTO) {
 		logger.info("Creation request for customer {} with data {}", phoneNo, friendDTO);
 		friendService.saveFriend(phoneNo, friendDTO);
 	}
-	
+
 	// Fetches friend and family numbers of a given customer phoneNo
 	@RequestMapping(value="/customers/{phoneNo}/friends",method=RequestMethod.GET, produces=MediaType.APPLICATION_JSON_VALUE)
 	public List<Long> getSpecificFriends(@PathVariable Long phoneNo){
 		System.out.println("===== Fetching Data ====");
 		logger.info("Friend and Family numbers for customer {}", phoneNo);
-		if(phoneNo==9009009001L)
-			throw new RuntimeException();
+		// Introducing delay time of 5s
+		try {
+			Thread.sleep(5000);
+		} catch(InterruptedException e) {
+			e.printStackTrace();
+		}
 		return friendService.getSpecificFriend(phoneNo);
 	}
 }

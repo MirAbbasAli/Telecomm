@@ -26,12 +26,20 @@ public class PlanController {
 	// Fetches all plan details
 	@RequestMapping(value = "/plans", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
 	public List<PlanDTO> getAllPlans() {
+		logger.info("Fetching All plans");
 		return planService.getAllPlans();
 	}
 	
 	// Fetches Plan for a given planId
 	@RequestMapping(value="/plans/{planId}",method=RequestMethod.GET, produces=MediaType.APPLICATION_JSON_VALUE)
 	public PlanDTO getSpecificPlan(@PathVariable Integer planId){
+		// Introducing delay time of 5s
+		try {
+			Thread.sleep(5000);
+		} catch(InterruptedException e) {
+			e.printStackTrace();
+		}
+		logger.info("Fetching details of plan "+planId);
 		return planService.getSpecificPlan(planId);
 	}
 }

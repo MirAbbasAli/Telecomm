@@ -13,11 +13,11 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.client.RestTemplate;
 
 import com.demo.infytel.dto.CustomerDTO;
 import com.demo.infytel.dto.LoginDTO;
 import com.demo.infytel.dto.PlanDTO;
+import com.demo.infytel.service.CustCircuitBreakerService;
 import com.demo.infytel.service.CustomerService;
 
 import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
@@ -33,8 +33,8 @@ public class CustomerController {
 	
 	
 	@Autowired 
-	RestTemplate template;
-	  	
+	private CustCircuitBreakerService custCircuitBreakerService;
+	
 	// Create a new customer
 	@RequestMapping(value = "/customers", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
 	public void createCustomer(@RequestBody CustomerDTO custDTO) {
@@ -54,17 +54,35 @@ public class CustomerController {
 	@CircuitBreaker(name="customerService",fallbackMethod="getCustomerProfileFallback")
 	public CustomerDTO getCustomerProfile(@PathVariable Long phoneNo) {
 
-		logger.info("Profile request for customer {}", phoneNo);
+		long overAllStart=System.currentTimeMillis();
 		
+		logger.info("Profile request for customer {}", phoneNo);
 		CustomerDTO custDTO=custService.getCustomerProfile(phoneNo);
+		
+		long planStart=System.currentTimeMillis();
+		
 		// Add rest endpoint to replace foreign key contraint for plan table
-		PlanDTO planDTO=template.getForObject("http://PlanMS/plans/"+custDTO.getCurrentPlan().getPlanId(), PlanDTO.class);
+		PlanDTO planDTO=custCircuitBreakerService.getSpecificPlan(custDTO.getCurrentPlan().getPlanId());
+		
+		long planStop=System.currentTimeMillis();
+		
 		custDTO.setCurrentPlan(planDTO);
 
-		@SuppressWarnings("unchecked")
+		long friendStart=System.currentTimeMillis();
+		
 		//		List<Long> friends=template.getForObject("http://MyLoadBalancer/customers/"+phoneNo+"/friends", List.class);
-		List<Long> friends=template.getForObject("http://FriendFamilyMS/customers/"+phoneNo+"/friends", List.class);
+		List<Long> friends=custCircuitBreakerService.getSpecificFriends(phoneNo);
+		
+		long friendStop=System.currentTimeMillis();
+		
 		custDTO.setFriendAndFamily(friends);
+		
+		long overAllStop=System.currentTimeMillis();
+		
+		logger.info("Total time for plan: "+(planStop-planStart));
+		logger.info("Total time for friend: "+(friendStop-friendStart));
+		logger.info("Total overall time for Request: "+(overAllStop-overAllStart));
+		
 		return custDTO;
 	}
 	
