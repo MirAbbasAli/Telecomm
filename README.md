@@ -16,5 +16,6 @@ A spring boot application based on microservices, it has functionalities related
 
 ![App Screenshot](https://github.com/MirAbbasAli/Telecomm/blob/master/telecomm-design.png)
 
+
 ## Appendix
 Infytel-config server and Infytel-discovery-server are no longer supported in this project. Registration and discovery of microservices are now being handled by Consul. The Configuration of consul server is done in yaml based configuration file in local repository.
