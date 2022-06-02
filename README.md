@@ -14,7 +14,7 @@ A spring boot application based on microservices, it has functionalities related
 
 ## Telecomm Microservice Architecture Diagram
 
-![App Screenshot](https://github.com/MirAbbasAli/Telecomm/blob/master/telecomm-design.png)
+![App Screenshot](https://github.com/MirAbbasAli/Telecomm/blob/master/telecomm-design-lb.png)
 
 ## API Reference
 
