@@ -16,6 +16,76 @@ A spring boot application based on microservices, it has functionalities related
 
 ![App Screenshot](https://github.com/MirAbbasAli/Telecomm/blob/master/telecomm-design.png)
 
+## API Reference
+
+#### Fetches call details of a specific customer
+
+```http
+  GET /customers/{phoneNo}/calldetails
+```
+
+| Parameter | Type     | Description                |
+| :-------- | :------- | :------------------------- |
+| `phoneNo` | `long` | **Required**. phoneNo |
+
+#### Login the customer
+
+```http
+  POST /login
+```
+
+
+#### Create a new customer
+
+```http
+  POST /customers
+```
+
+#### Fetches full profile of a specific customer
+
+```http
+  POST /customers/{phoneNo}
+```
+
+| Parameter | Type     | Description                |
+| :-------- | :------- | :------------------------- |
+| `phoneNo` | `long` | **Required**. phoneNo |
+
+#### Create a Friend Family
+
+```http
+  POST /customers/{phoneNo}/friends
+```
+
+| Parameter | Type     | Description                |
+| :-------- | :------- | :------------------------- |
+| `phoneNo` | `long` | **Required**. phoneNo |
+
+#### Fetches friend and family numbers of a given customer phoneNo
+
+```http
+  GET /customers/{phoneNo}/friends
+```
+
+| Parameter | Type     | Description                |
+| :-------- | :------- | :------------------------- |
+| `phoneNo` | `long` | **Required**. phoneNo |
+
+#### Fetches all plan details
+
+```http
+  GET /plans
+```
+#### Fetches Plan for a given planId
+
+```http
+  GET /plans/{planId}
+```
+
+| Parameter | Type     | Description                |
+| :-------- | :------- | :------------------------- |
+| `planId` | `Integer` | **Required**. planId |
+
 
 ## Appendix
 Infytel-config server and Infytel-discovery-server are no longer supported in this project. Registration and discovery of microservices are now being handled by Consul. The Configuration of consul server is done in yaml based configuration file in local repository.
