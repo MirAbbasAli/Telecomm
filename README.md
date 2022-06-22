@@ -89,3 +89,26 @@ A spring boot application based on microservices, it has functionalities related
 
 ## Appendix
 Infytel-config server and Infytel-discovery-server are no longer supported in this project. Registration and discovery of microservices are now being handled by Consul. The Configuration of consul server is done in yaml based configuration file in local repository.
+
+## Create MySQL image
+Navigate to database folder to build your docker image, run the following command:
+
+```
+  docker build -f Dockerfile -t telecomm-mysql-image:latest .
+```
+This command will create a customer MySQL image with the name telecomm-mysql-image:latest 
+
+## Create Container for custom MySQL image
+The following command can be used to create a container:
+```
+  docker run --name=mysql-container -e MYSQL_ROOT_PASSWORD=root -d telecomm-mysql-image
+```
+
+This command will create a container named mysql-container using custom MySQL image and the password will be set as root. This command will also start the container in the detached state.
+
+To connect to the MySQL container run the following command
+```
+  docker exec -it mysql-container -u root -p
+```
+Here, <b>mysql-container</b> is the name of container and <b>root</b> is the username, it will now ask you for a password. Provide the password which you have given during the creation of the container.
+Here, it is <b>root</b>. 
