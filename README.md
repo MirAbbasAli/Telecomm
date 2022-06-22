@@ -87,8 +87,6 @@ A spring boot application based on microservices, it has functionalities related
 | `planId` | `Integer` | **Required**. planId |
 
 
-## Appendix
-Infytel-config server and Infytel-discovery-server are no longer supported in this project. Registration and discovery of microservices are now being handled by Consul. The Configuration of consul server is done in yaml based configuration file in local repository.
 
 ## Create MySQL image
 Navigate to database folder to build your docker image, run the following command:
@@ -112,3 +110,7 @@ To connect to the MySQL container run the following command
 ```
 Here, <b>mysql-container</b> is the name of container and <b>root</b> is the username, it will now ask you for a password. Provide the password which you have given during the creation of the container.
 Here, it is <b>root</b>. 
+
+
+## Appendix
+Infytel-config server and Infytel-discovery-server are no longer supported in this project. Registration and discovery of microservices are now being handled by Consul. The Configuration of consul server is done in yaml based configuration file in local repository.
