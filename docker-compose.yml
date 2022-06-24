@@ -59,11 +59,8 @@ services:
   restart: always
   depends_on:
    - telecomm-mysql
-  ports:
-   - 8300:8300
   networks:
    - telecomm-ms-compose-network
-  container_name: telecomm-friendfamily-con
 
  telecomm-gateway:
   build: ./GatewayMS
