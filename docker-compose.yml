@@ -1,0 +1,82 @@
+version: '3.8'
+
+networks:
+ telecomm-ms-compose-network:
+
+# List of docker services
+services:
+
+ telecomm-mysql:
+  build: ./database
+  image: telecomm-ms-mysql-img:v1
+  environment:
+   MYSQL_ROOT_PASSWORD: root
+  restart: always
+  networks:
+   - telecomm-ms-compose-network
+  container_name: mysql-ms-con
+
+ telecomm-plan:
+  build: ./PlanMS
+  image: telecomm-plan-img:v1
+  restart: always
+  depends_on:
+   - telecomm-mysql
+  ports:
+   - 8400:8400
+  networks:
+   - telecomm-ms-compose-network
+  container_name: telecomm-plan-con
+
+ telecomm-customer:
+  build: ./CustomerMS
+  image: telecomm-customer-img:v1
+  restart: always
+  depends_on:
+   - telecomm-mysql
+  ports:
+   - 8200:8200
+  networks:
+   - telecomm-ms-compose-network
+  container_name: telecomm-customer-con
+
+ telecomm-calldetails:
+   build: ./CalldetailsMS
+   image: telecomm-calldetails-img:v1
+   restart: always
+   depends_on:
+
+    - telecomm-mysql
+   ports:
+    - 8100:8100
+   networks:
+    - telecomm-ms-compose-network
+   container_name: telecomm-calldetails-con
+ 
+ telecomm-friendfamily:
+  build: ./FriendFamilyMS
+  image: telecomm-friendfamily-img:v1
+  restart: always
+  depends_on:
+   - telecomm-mysql
+  ports:
+   - 8300:8300
+  networks:
+   - telecomm-ms-compose-network
+  container_name: telecomm-friendfamily-con
+
+ telecomm-gateway:
+  build: ./GatewayMS
+  image: telecomm-gateway-img:v1
+  restart: always
+  depends_on:
+   - telecomm-mysql
+   - telecomm-customer
+   - telecomm-plan
+   - telecomm-calldetails
+   - telecomm-friendfamily
+  ports:
+   - 8000:8000
+  networks:
+   - telecomm-ms-compose-network
+  container_name: telecomm-gateway-con
